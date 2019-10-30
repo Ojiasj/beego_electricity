@@ -69,6 +69,11 @@ func (this *GoodsController) ShowIndex() {
 	}
 	this.Data["goods"] = goods
 
+	// 购物车
+	cartCount := GetCartCount(&this.Controller)
+	this.Data["cartCount"] = cartCount
+
+
 	this.TplName = "index.html"
 }
 
@@ -121,7 +126,6 @@ func (this *GoodsController) ShowGoodsDetail() {
 		//添加记录，用redis储存
 		conn, err := redis.Dial("tcp", "192.168.88.130:6379")
 		defer conn.Close()
-		defer conn.Close()
 		if err != nil {
 			beego.Info("redis连接错误", err)
 		}
@@ -132,6 +136,8 @@ func (this *GoodsController) ShowGoodsDetail() {
 	}
 
 	ShowLayout(&this.Controller)
+	cartCount := GetCartCount(&this.Controller)
+	this.Data["cartCount"] = cartCount
 	this.TplName = "detail.html"
 }
 
@@ -248,3 +254,4 @@ func (this *GoodsController) HandleSearch() {
 	ShowLayout(&this.Controller)
 	this.TplName = "search.html"
 }
+

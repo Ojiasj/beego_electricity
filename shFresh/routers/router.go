@@ -26,12 +26,17 @@ func init() {
 	// 跳转首页
 	beego.Router("/", &controllers.GoodsController{}, "get:ShowIndex")
 	// 商品详情显示
-	beego.Router("/goodsDetail",&controllers.GoodsController{},"get:ShowGoodsDetail")
+	beego.Router("/goodsDetail", &controllers.GoodsController{}, "get:ShowGoodsDetail")
 	// 获取商品列表页面
-	beego.Router("/goodsList",&controllers.GoodsController{},"get:ShowList")
+	beego.Router("/goodsList", &controllers.GoodsController{}, "get:ShowList")
 	//商品搜索
-	beego.Router("/goodsSearch",&controllers.GoodsController{},"post:HandleSearch")
-
+	beego.Router("/goodsSearch", &controllers.GoodsController{}, "post:HandleSearch")
+	// 购物车
+	beego.Router("/user/addCart", &controllers.CartController{}, "post:HandleAddCart")
+	// 购物车页面
+	beego.Router("/user/cart", &controllers.CartController{}, "get:ShowCart")
+	// 商品购物车
+	beego.Router("/user/UpdateCart",&controllers.CartController{},"post:HandleUpdateCart")
 }
 
 var filterFunc = func(ctx *context.Context) {
