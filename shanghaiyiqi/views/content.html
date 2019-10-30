@@ -1,0 +1,45 @@
+
+
+        <div class="main_body" id="main_body">
+        <div class="breadcrub">
+            当前位置：商品管理>商品列表>商品详情
+        </div>
+        <div class="pannel">
+            <h3 class="review_title">商品详情</h3>
+            <div class="form_group">
+                <label>商品标题：</label>
+                <p class="detail"><b>{{.goods.Name}}</b></p>
+            </div>
+            <div class="form_group">
+                <label>商品类型：</label>
+                <p class="detail">{{.goods.GoodsType.Name}}</p>
+            </div>
+            <div class="form_group">
+                <label>商品描述：</label>
+                <p class="detail">{{.goods.Desc}}</p>
+            </div>
+            <div class="form_group">
+                <label>商品图片：</label>
+                <p class="detail"><img src="{{.goods.Image}}"></p>
+            </div>
+            <div class="form_group">
+                <label>商品价格：</label>
+                <p class="detail">{{.goods.Price}}</p>
+            </div>
+            <div class="form_group">
+                <label>商品销量：</label>
+                <p class="detail">{{.goods.Sales}}</p>
+            </div>
+            <div class="form_group">
+                <label>商品库存：</label>
+            <p class="detail">{{.goods.Stock}}</p>
+            </div>
+            <div class="form_group">
+                <label>添加时间：</label>
+                <p class="detail">{{.goods.Time.Format "2006-01-02 15:04:05"}}</p>
+                <span>{{.errmsg}}</span>
+            </div>
+        </div>
+    </div>
+
+

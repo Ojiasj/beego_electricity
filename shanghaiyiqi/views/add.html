@@ -1,0 +1,54 @@
+
+    <div class="main_body" id="main_body">
+        <div class="breadcrub">
+            当前位置：商品管理>添加商品
+        </div>
+        <div class="pannel">
+            <form method="post" action="/Article/AddArticle" enctype="multipart/form-data">
+            <h3 class="review_title">添加商品</h3>
+            <div class="form_group">
+                <label>商品名称：</label>
+                <input type="text" class="input_txt2" name="goodsName" >
+            </div>
+            <div class="form_group">
+                <label>商品类型：</label>
+                <select class="sel_opt" name="selectType">
+                  {{range .types}}
+                    <option>{{.Name}}</option>
+                          {{end}}
+
+                </select>
+            </div>
+            <div class="form_group">
+                <label>商品SPU：</label>
+                <select class="sel_opt" name="selectGoodsSPU">
+                {{range .goodsSPU}}
+                    <option>{{.Name}}</option>
+                {{end}}
+
+                </select>
+            </div>
+            <div class="form_group">
+                <label>商品描述：</label>
+                <textarea class="input_multxt" name="desc"></textarea>
+            </div>
+            <div class="form_group">
+                <label>商品库存：</label>
+                <input type="text" class="input_txt2" name="goodsStock" >
+            </div>
+            <div class="form_group">
+                <label>商品价格：</label>
+                <input type="text" class="input_txt2" name="goodsPrice" >
+            </div>
+            <div class="form_group">
+                <label>商品图片：</label>
+                <input type="file" class="input_file"  name="uploadname">
+            </div>
+
+            <div class="form_group indent_group line_top">
+                <input type="submit" value="添 加" class="confirm">
+                <span>{{.errmsg}}</span>
+            </div>
+        </form>
+        </div>
+</div>
