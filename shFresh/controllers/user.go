@@ -231,8 +231,27 @@ func (this *UserController) ShowUserCenterInfo() {
 
 // 展示用户中心订单页
 func (this *UserController) ShowUserCenterOrder() {
-	_ = GetUser(&this.Controller)
+	userName := GetUser(&this.Controller)
 
+	// 获取订单表数据
+	o := orm.NewOrm()
+	var user models.User
+	user.Name = userName
+	o.Read(&user, "Name")
+	var orderInfos []models.OrderInfo
+	o.QueryTable("OrderInfo").RelatedSel("User").Filter("User__Id", user.Id).All(&orderInfos)
+
+	goodsBuffer := make([]map[string]interface{}, len(orderInfos))
+	for index, orderInfo := range orderInfos {
+		var orderGoods []models.OrderGoods
+		o.QueryTable("OrderGoods").RelatedSel("OrderInfo", "GoodsSKU").Filter("OrderInfo__Id", orderInfo.Id).All(&orderGoods)
+		temp := make(map[string]interface{})
+		temp["orderInfo"] = orderInfo
+		temp["orderGoods"] = orderGoods
+		goodsBuffer[index] = temp
+	}
+
+	this.Data["goodsBuffer"] = goodsBuffer
 	this.Layout = "userCenterLayout.html"
 	this.TplName = "user_center_order.html"
 }

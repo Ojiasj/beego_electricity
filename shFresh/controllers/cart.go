@@ -140,7 +140,7 @@ func (this *CartController) HandleUpdateCart() {
 	// 获取数据
 	skuid, err1 := this.GetInt("skuid")
 	count, err2 := this.GetInt("count")
-	beego.Info(skuid,count)
+	beego.Info(skuid, count)
 	resp := make(map[string]interface{})
 	defer this.ServeJSON()
 	// 校验数据
@@ -174,5 +174,40 @@ func (this *CartController) HandleUpdateCart() {
 	conn.Do("hset", "cart_"+strconv.Itoa(user.Id), skuid, count)
 	resp["code"] = 5
 	resp["errmsg"] = "OK"
+	this.Data["json"] = resp
+}
+
+func (this *CartController) DeleteCart() {
+	// 获取数据
+	skuid, err := this.GetInt("skuid")
+	resp := make(map[string]interface{})
+	defer this.ServeJSON()
+	// 校验数据
+	if err != nil {
+		resp["code"] = 1
+		resp["errmsg"] = "请求数据不正确"
+		this.Data["json"] = resp
+		return
+	}
+	// 处理数据
+	// 连接数据库
+	conn, err := redis.Dial("tcp", "192.168.88.130:6379")
+	if err != nil {
+		resp["code"] = 2
+		resp["errmsg"] = "redis连接错误"
+		this.Data["json"] = resp
+		return
+	}
+	// 获取userId
+	userName := this.GetSession("userName")
+	var user models.User
+	user.Name = userName.(string)
+	o := orm.NewOrm()
+	o.Read(&user, "Name")
+
+	conn.Do("hdel", "cart_"+strconv.Itoa(user.Id), skuid)
+	// 返回数据
+	resp["code"] = 5
+	resp["errmsg"] = "删除成功"
 	this.Data["json"] = resp
 }
