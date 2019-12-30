@@ -9,6 +9,7 @@ import (
 	"shFresh/models"
 	"strconv"
 	"github.com/gomodule/redigo/redis"
+	"math"
 )
 
 type UserController struct {
@@ -66,7 +67,7 @@ func (this *UserController) HandleReg() {
 	emailConn.To = []string{email}
 	emailConn.Subject = "天天生鲜用户注册"
 	//注意这里我们发送给用户的是激活请求地址
-	emailConn.Text = "127.0.0.1:8080/active?id=" + strconv.Itoa(user.Id)
+	emailConn.HTML = "复制该连接到浏览器中激活：192.168.88.130:8080/active?id=" + strconv.Itoa(user.Id)
 
 	err = emailConn.Send()
 	if err != nil {
@@ -155,7 +156,7 @@ func (this *UserController) HandleLogin() {
 		return
 	}
 
-	//4.返回视图1‘
+	//4.返回视图1
 	remeber := this.GetString("remember")
 
 	//base64加密
@@ -232,7 +233,6 @@ func (this *UserController) ShowUserCenterInfo() {
 // 展示用户中心订单页
 func (this *UserController) ShowUserCenterOrder() {
 	userName := GetUser(&this.Controller)
-
 	// 获取订单表数据
 	o := orm.NewOrm()
 	var user models.User
@@ -241,13 +241,40 @@ func (this *UserController) ShowUserCenterOrder() {
 	var orderInfos []models.OrderInfo
 	o.QueryTable("OrderInfo").RelatedSel("User").Filter("User__Id", user.Id).All(&orderInfos)
 
+	// 获取总页数
+	count, err := o.QueryTable("OrderInfo").RelatedSel("User").Filter("User__Id", user.Id).Count()
+	if err != nil {
+		beego.Error("获取总页数错误", err)
+	}
+	pageSize := 1
+
+	pageIndex, err := this.GetInt("pageIndex")
+	pageCount := math.Ceil(float64(count) / float64(pageSize))
+	pages := PageTool(int(pageCount), int(pageIndex))
+	this.Data["pages"] = pages
+
+	start := (pageIndex - 1) * pageSize
+
+	// 获取上一页代码
+	PrePage := pageIndex - 1
+	if PrePage <= 1 {
+		PrePage = 1
+	}
+	NextPage := pageIndex + 1
+	if NextPage >= int(pageCount) {
+		NextPage = int(pageCount)
+	}
+	this.Data["PrePage"] = PrePage
+	this.Data["NextPage"] = NextPage
+
 	goodsBuffer := make([]map[string]interface{}, len(orderInfos))
 	for index, orderInfo := range orderInfos {
 		var orderGoods []models.OrderGoods
-		o.QueryTable("OrderGoods").RelatedSel("OrderInfo", "GoodsSKU").Filter("OrderInfo__Id", orderInfo.Id).All(&orderGoods)
+		o.QueryTable("OrderGoods").RelatedSel("OrderInfo", "GoodsSKU").Filter("OrderInfo__Id", orderInfo.Id).Limit(pageSize, start).All(&orderGoods)
 		temp := make(map[string]interface{})
 		temp["orderInfo"] = orderInfo
 		temp["orderGoods"] = orderGoods
+		beego.Info(orderGoods)
 		goodsBuffer[index] = temp
 	}
 

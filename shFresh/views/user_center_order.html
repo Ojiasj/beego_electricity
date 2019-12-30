@@ -41,20 +41,22 @@
 
 
         <div class="pagenation">
-            <a href="#">
-                <上一页
+            <a href="/user/userCenterOrder?pageIndex={{.PrePage}}">
+                <-上一页
             </a>
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">5</a>
-            <a href="#">下一页></a>
+        {{range $index,$val :=.pages}}
+        {{if compare $val $.pageIndex}}
+            <a href="/user/userCenterOrder?pageIndex={{$val}}" class="active">{{$val}}</a>
+        {{else}}
+            <a href="/user/userCenterOrder?pageIndex={{$val}}">{{$val}}</a>
+        {{end}}
+        {{end}}
+            <a href="/user/userCenterOrder?pageIndex={{.NextPage}}">
+                下一页-></a>
         </div>
     </div>
 </div>
+    <script type="text/javascript">
 
-<script type="text/javascript">
-
-</script>
+    </script>
 

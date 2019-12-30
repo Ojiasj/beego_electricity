@@ -65,14 +65,16 @@ func (this *GoodsController) ShowIndex() {
 		// 获取图片商品数据
 		o.QueryTable("IndexTypeGoodsBanner").RelatedSel("GoodsType", "GoodsSKU").OrderBy("Index").Filter("GoodsType", value["type"]).Filter("DisplayType", 1).All(&imgGoods)
 		value["textGoods"] = textGoods
+		beego.Error(textGoods)
 		value["imgGoods"] = imgGoods
+		//beego.Info(value)
 	}
+	beego.Info(goods)
 	this.Data["goods"] = goods
 
 	// 购物车
 	cartCount := GetCartCount(&this.Controller)
 	this.Data["cartCount"] = cartCount
-
 
 	this.TplName = "index.html"
 }
@@ -182,7 +184,6 @@ func (this *GoodsController) ShowList() {
 
 	//获取商品
 	var goods []models.GoodsSKU
-	//o.QueryTable("GoodsSKU").RelatedSel("GoodsType").Filter("GoodsType__id", id).All(&goods)
 	//返回视图
 	this.Data["goodsNew"] = goodsNew
 
@@ -254,4 +255,3 @@ func (this *GoodsController) HandleSearch() {
 	ShowLayout(&this.Controller)
 	this.TplName = "search.html"
 }
-

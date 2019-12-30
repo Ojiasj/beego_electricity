@@ -36,13 +36,17 @@ func init() {
 	// 购物车页面
 	beego.Router("/user/cart", &controllers.CartController{}, "get:ShowCart")
 	// 商品购物车
-	beego.Router("/user/UpdateCart",&controllers.CartController{},"post:HandleUpdateCart")
+	beego.Router("/user/UpdateCart", &controllers.CartController{}, "post:HandleUpdateCart")
 	// 购物车删除
-	beego.Router("/user/deleteCart",&controllers.CartController{},"post:DeleteCart")
+	beego.Router("/user/deleteCart", &controllers.CartController{}, "post:DeleteCart")
 	// 订单页面
-	beego.Router("/user/showOrder",&controllers.OrderController{},"post:ShowOrder")
+	beego.Router("/user/showOrder", &controllers.OrderController{}, "post:ShowOrder")
 	// 提交订单
-	beego.Router("/user/addOrder",&controllers.OrderController{},"post:AddOrder")
+	beego.Router("/user/addOrder", &controllers.OrderController{}, "post:AddOrder")
+	//处理支付
+	beego.Router("/user/pay", &controllers.OrderController{}, "get:HandlePay")
+	//支付成功
+	beego.Router("/user/payok", &controllers.OrderController{}, "get:PayOk")
 }
 
 var filterFunc = func(ctx *context.Context) {
